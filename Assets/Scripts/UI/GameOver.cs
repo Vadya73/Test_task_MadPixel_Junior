@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mangers.Game;
 using UnityEngine;
 using UnityEngine.UI;
 namespace Game.UI {

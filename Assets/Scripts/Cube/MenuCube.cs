@@ -1,28 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
-using Menu;
+using Mangers.Menu;
 using UnityEngine;
-namespace Game.CubeNS {
-    public class MenuCube : BaseCube {
+
+namespace Cube 
+{
+    public class MenuCube : BaseCube 
+    {
         [SerializeField] MenuManager menuManager;
-        protected override void SetValueToManagerList() {
-            menuManager.collisionCube.Add(this.gameObject);
+        protected override void SetValueToManagerList() 
+        {
+            menuManager.CollisionCubeAdd(this.gameObject);
         }
 
-        public void FoundManager(MenuManager menu) {
+        public void FoundManager(MenuManager menu) 
+        {
             menuManager = menu;
         }
 
-        public override void Init() {
+        public override void Init() 
+        {
             base.Init();
         }
-        private void Start() {
+        private void Start() 
+        {
             Init();
         }
 
-        protected override void OnCollisionEnter(Collision collision) {
-            if (collision.gameObject.TryGetComponent<MenuCube>(out MenuCube otherCube)) {
-                if (otherCube.currIntOfArr == currIntOfArr) {
+        protected override void OnCollisionEnter(Collision collision) 
+        {
+            if (collision.gameObject.TryGetComponent<MenuCube>(out MenuCube otherCube)) 
+            {
+                if (otherCube.currIntOfArr == currIntOfArr) 
+                {
                     rigidbody.constraints = RigidbodyConstraints.None;
                     SetValueToManagerList();
                     MoveUp();

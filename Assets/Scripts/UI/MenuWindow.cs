@@ -6,7 +6,8 @@ namespace Game.UI {
         public bool IsOpened { get; private set; }
 
         protected bool _initialized = false;
-        public virtual void Init(bool startOpened = false) {
+        public virtual void Init(bool startOpened = false) 
+        {
             IsOpened = startOpened;
             gameObject.SetActive(startOpened);
             _initialized = true;
@@ -16,7 +17,8 @@ namespace Game.UI {
         }
         public void Open() => SetOpenedInternal(true);
         public void Close() => SetOpenedInternal(false);
-        protected virtual void SetOpenedInternal(bool value) {
+        protected virtual void SetOpenedInternal(bool value) 
+        {
             if (!_initialized) Init();
             if (value == IsOpened) return;
             IsOpened = value;

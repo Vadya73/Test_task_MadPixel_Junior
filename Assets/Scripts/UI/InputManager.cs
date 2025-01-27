@@ -1,15 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
+using Mangers.Game;
 using UnityEngine;
-using Game.CubeNS;
-namespace Game.UI {
-    public class InputManager :MonoBehaviour {
 
-        [SerializeField] Camera camera;
+namespace UI 
+{
+    public class InputManager : MonoBehaviour 
+    {
+        [SerializeField] private new Camera camera;
 
-        InGameUIManager inGameUIManager;
+        private InGameUIManager inGameUIManager;
         
-        public bool Waintig {
+        public bool Waiting {
             set { 
                 waiting = value;
                 isPressed = false;
@@ -24,29 +24,34 @@ namespace Game.UI {
             inGameUIManager = manager;
         }
 
-        private void Update() {
-            if (!waiting && !inGameUIManager.inGameManager.IsGameOver) {
-                if (Input.GetMouseButton(0)) MouseInput();
+        private void Update() 
+        {
+            if (!waiting && !inGameUIManager.inGameManager.IsGameOver) 
+            {
+                if (Input.GetMouseButton(0)) 
+                    MouseInput();
+                
                 if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) 
                     ArrowInput(Vector3.left);
                 else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
                     ArrowInput(Vector3.right);
+                
                 if (isPressed && !Input.GetMouseButton(0)
                     && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.LeftArrow)
                     && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow)) {
                     isPressed = false;
 
-                    Cube cube = inGameUIManager.inGameManager.CubeGO.GetComponent<Cube>();
+                    Cube.Cube cube = inGameUIManager.inGameManager.CubeGO.GetComponent<Cube.Cube>();
                     cube.MoveForward();
                     cube.StartCoroutinePushed(inGameUIManager.inGameManager.TimeToChange);
 
                     inGameUIManager.inGameManager.RechargeCubeCoroutine();
-
                 }
             }
         }
-        private float deltaSwipe = 0.005f;
-        private void MouseInput() {
+        private const float deltaSwipe = 0.005f;
+        private void MouseInput() 
+        {
             isPressed = true;
             var mousePos2D = Input.mousePosition;
             var screenToCameraDistance = camera.nearClipPlane;
@@ -54,17 +59,18 @@ namespace Game.UI {
             var mousePosNearClipPlane = new Vector3(mousePos2D.x, mousePos2D.y, screenToCameraDistance);
             var worldPointPos = camera.ScreenToWorldPoint(mousePosNearClipPlane);
 
-            var cubePosition = inGameUIManager.inGameManager.CubeGO.GetComponent<Cube>().Position * 0.15f / 3.85f;
+            var cubePosition = inGameUIManager.inGameManager.CubeGO.GetComponent<Cube.Cube>().Position * 0.15f / 3.85f;
 
             if (cubePosition.x - worldPointPos.x > deltaSwipe)
-                inGameUIManager.inGameManager.CubeGO.GetComponent<Cube>().MoveToSide(Vector3.left*2);
+                inGameUIManager.inGameManager.CubeGO.GetComponent<Cube.Cube>().MoveToSide(Vector3.left*2);
             else if(cubePosition.x - worldPointPos.x < -deltaSwipe)
-                inGameUIManager.inGameManager.CubeGO.GetComponent<Cube>().MoveToSide(Vector3.right*2);
-            else inGameUIManager.inGameManager.CubeGO.GetComponent<Cube>().MoveToSide(Vector3.zero);
+                inGameUIManager.inGameManager.CubeGO.GetComponent<Cube.Cube>().MoveToSide(Vector3.right*2);
+            else inGameUIManager.inGameManager.CubeGO.GetComponent<Cube.Cube>().MoveToSide(Vector3.zero);
         }
-        private void ArrowInput(Vector3 vector) {
+        private void ArrowInput(Vector3 vector) 
+        {
             isPressed = true;
-            inGameUIManager.inGameManager.CubeGO.GetComponent<Cube>().MoveToSide(vector);
+            inGameUIManager.inGameManager.CubeGO.GetComponent<Cube.Cube>().MoveToSide(vector);
         }
         
 

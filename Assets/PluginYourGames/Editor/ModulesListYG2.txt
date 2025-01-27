@@ -1,0 +1,6 @@
+Authorization v1.0
+InterstitialAdv v1.001
+Localization v1.001
+Payments v1.0
+StickyAdv v1.0
+Storage v1.01

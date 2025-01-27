@@ -1,9 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Game.UI;
+using Mangers.Game;
 using UnityEngine;
 using UnityEngine.UI;
-namespace Game.UI {
-    public class SettingMenu :MenuWindow {
+
+namespace UI 
+{
+    public class SettingMenu : MenuWindow 
+    {
 
         [SerializeField] InGameUIManager inGameUIManager;
 
@@ -18,7 +22,13 @@ namespace Game.UI {
         [SerializeField] Button musicButton;
         [SerializeField] Image musicOff;
         [SerializeField] Image musicOn;
-        public override void Init(bool isOpen = false) {
+
+        private MusicManager musicManager;
+
+        public override void Init(bool isOpen = false) 
+        {
+            musicManager = ServiceLocator.GetService<MusicManager>();
+
             base.Init(isOpen);
             okButton.onClick.AddListener(CloseSettingMenu);
             closeButton.onClick.AddListener(CloseSettingMenu);
@@ -27,24 +37,49 @@ namespace Game.UI {
             backToMenuButton.onClick.AddListener(BackToMenu);
             musicButton.onClick.AddListener(ChangeMusic);
 
-            //TODO SAVE Music Value
             musicOff.gameObject.SetActive(true);
             musicOn.gameObject.SetActive(false);
+            UpdateMusicIconState();
+        }
+
+        private void OnDestroy()
+        {
+            okButton.onClick.RemoveListener(CloseSettingMenu);
+            closeButton.onClick.RemoveListener(CloseSettingMenu);
+
+            restartButton.onClick.RemoveListener(RestartGame);
+            backToMenuButton.onClick.RemoveListener(BackToMenu);
+            musicButton.onClick.RemoveListener(ChangeMusic);
         }
 
         private void CloseSettingMenu() => inGameUIManager.CloseSetting();
+
         private void RestartGame() => inGameUIManager.inGameManager.RestartGame();
+
         private void BackToMenu() => inGameUIManager.inGameManager.BackToMenu();
-        private void ChangeMusic() {
-            if (musicOff.gameObject.activeSelf) MusicSwitcher(false);
-            else MusicSwitcher(true);
+
+        private void ChangeMusic() => MusicSwitcher();
+        
+        private void MusicSwitcher() 
+        {
+            musicOff.gameObject.SetActive(!musicManager.IsPlaying);
+            musicOn.gameObject.SetActive(musicManager.IsPlaying);
+
+            musicManager.SwitchPlayingMusic();
         }
 
-        private void MusicSwitcher(bool value) {
-            musicOff.gameObject.SetActive(value);
-            musicOn.gameObject.SetActive(!value);
+        private void UpdateMusicIconState()
+        {
+            if (musicManager == null)
+            {
+                Debug.LogError("MusicManager не инициализирован.");
+                return;
+            }
 
-            inGameUIManager.inGameManager.audioSwitcher.SwitchVolume(value);
+            bool musicPlayingState = musicManager.IsPlaying;
+
+            musicOff.gameObject.SetActive(!musicPlayingState);
+            musicOn.gameObject.SetActive(musicPlayingState);
         }
 
     }
